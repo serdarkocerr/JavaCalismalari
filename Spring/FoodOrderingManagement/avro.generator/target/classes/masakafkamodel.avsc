@@ -1,0 +1,22 @@
+{
+  "type" : "record",
+  "name" : "MasaKafkaModel",
+  "namespace" : "tr.com.siparis.sistemi.kafka.model",
+  "fields" : [ {
+    "name" : "masaListesi",
+    "type" : [ "null", {
+      "type" : "array",
+      "items" : {
+        "type" : "record",
+        "name" : "Masa",
+        "fields" : [ {
+          "name" : "masaAdi",
+          "type" : [ "null", "string" ]
+        }, {
+          "name" : "masaId",
+          "type" : "int"
+        } ]
+      }
+    } ]
+  } ]
+}

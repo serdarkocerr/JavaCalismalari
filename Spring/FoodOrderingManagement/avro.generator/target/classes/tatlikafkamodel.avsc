@@ -1,0 +1,22 @@
+{
+  "type" : "record",
+  "name" : "TatliKafkaModel",
+  "namespace" : "tr.com.siparis.sistemi.kafka.model",
+  "fields" : [ {
+    "name" : "tatliListesi",
+    "type" : [ "null", {
+      "type" : "array",
+      "items" : {
+        "type" : "record",
+        "name" : "Tatli",
+        "fields" : [ {
+          "name" : "tatliAdi",
+          "type" : [ "null", "string" ]
+        }, {
+          "name" : "tatliId",
+          "type" : "int"
+        } ]
+      }
+    } ]
+  } ]
+}

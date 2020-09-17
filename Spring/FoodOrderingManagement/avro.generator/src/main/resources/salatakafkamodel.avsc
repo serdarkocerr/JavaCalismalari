@@ -1,0 +1,22 @@
+{
+  "type" : "record",
+  "name" : "SalataKafkaModel",
+  "namespace" : "tr.com.siparis.sistemi.kafka.model",
+  "fields" : [ {
+    "name" : "salataListesi",
+    "type" : [ "null", {
+      "type" : "array",
+      "items" : {
+        "type" : "record",
+        "name" : "Salata",
+        "fields" : [ {
+          "name" : "salataAdi",
+          "type" : [ "null", "string" ]
+        }, {
+          "name" : "salataId",
+          "type" : "int"
+        } ]
+      }
+    } ]
+  } ]
+}

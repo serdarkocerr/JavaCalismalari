@@ -1,0 +1,22 @@
+{
+  "type" : "record",
+  "name" : "CorbaKafkaModel",
+  "namespace" : "tr.com.siparis.sistemi.kafka.model",
+  "fields" : [ {
+    "name" : "corbaListesi",
+    "type" : [ "null", {
+      "type" : "array",
+      "items" : {
+        "type" : "record",
+        "name" : "Corba",
+        "fields" : [ {
+          "name" : "corbaAdi",
+          "type" : [ "null", "string" ]
+        }, {
+          "name" : "corbaId",
+          "type" : "int"
+        } ]
+      }
+    } ]
+  } ]
+}

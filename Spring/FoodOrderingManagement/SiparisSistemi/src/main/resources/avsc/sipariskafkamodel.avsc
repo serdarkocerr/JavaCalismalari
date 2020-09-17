@@ -1,0 +1,67 @@
+{
+  "type" : "record",
+  "name" : "SiparisKafkaModel",
+  "namespace" : "tr.com.siparis.sistemi.kafka.model",
+  "fields" : [ {
+    "name" : "siparisListesi",
+    "type" : [ "null", {
+      "type" : "array",
+      "items" : {
+        "type" : "record",
+        "name" : "Siparis",
+        "fields" : [ {
+          "name" : "anayemekAdi",
+          "type" : [ "null", "string" ]
+        }, {
+          "name" : "anayemekId",
+          "type" : "int"
+        }, {
+          "name" : "corbaAdi",
+          "type" : [ "null", "string" ]
+        }, {
+          "name" : "corbaId",
+          "type" : "int"
+        }, {
+          "name" : "kullaniciAdi",
+          "type" : [ "null", "string" ]
+        }, {
+          "name" : "kullaniciId",
+          "type" : "int"
+        }, {
+          "name" : "kullaniciSoyadi",
+          "type" : [ "null", "string" ]
+        }, {
+          "name" : "kullaniciTurAdi",
+          "type" : [ "null", "string" ]
+        }, {
+          "name" : "kullaniciTurId",
+          "type" : "int"
+        }, {
+          "name" : "masaAdi",
+          "type" : [ "null", "string" ]
+        }, {
+          "name" : "masaId",
+          "type" : "int"
+        }, {
+          "name" : "salataAdi",
+          "type" : [ "null", "string" ]
+        }, {
+          "name" : "salataId",
+          "type" : "int"
+        }, {
+          "name" : "siparisDurumu",
+          "type" : [ "null", "string" ]
+        }, {
+          "name" : "siparisId",
+          "type" : "int"
+        }, {
+          "name" : "tatliAdi",
+          "type" : [ "null", "string" ]
+        }, {
+          "name" : "tatliId",
+          "type" : "int"
+        } ]
+      }
+    } ]
+  } ]
+}

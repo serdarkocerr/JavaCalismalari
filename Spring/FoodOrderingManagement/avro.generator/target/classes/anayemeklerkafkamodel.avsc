@@ -1,0 +1,22 @@
+{
+  "type" : "record",
+  "name" : "AnayemekKafkaModel",
+  "namespace" : "tr.com.siparis.sistemi.kafka.model",
+  "fields" : [ {
+    "name" : "anayemekListesi",
+    "type" : [ "null", {
+      "type" : "array",
+      "items" : {
+        "type" : "record",
+        "name" : "Anayemek",
+        "fields" : [ {
+          "name" : "anayemek",
+          "type" : [ "null", "string" ]
+        }, {
+          "name" : "anayemekId",
+          "type" : "int"
+        } ]
+      }
+    } ]
+  } ]
+}

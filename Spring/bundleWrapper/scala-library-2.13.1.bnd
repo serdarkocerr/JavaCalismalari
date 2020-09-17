@@ -1,0 +1,7 @@
+-dsannotations: *
+-metatypeannotations: *
+Service-Component: *
+
+-classpath: jar/scala-library-2.13.1.jar
+Bundle-Version: 2.13.1
+Export-Package: scala.*;version="2.13.1"

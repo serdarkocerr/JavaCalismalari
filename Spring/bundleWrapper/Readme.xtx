@@ -1,0 +1,1 @@
+bundle halinde olmayan jar dosyalarini OSGi uygulamalarinde kullanabilecek bundle formatina donusturur. Eclipse'in bndtools plugin'i ile kullanılır.

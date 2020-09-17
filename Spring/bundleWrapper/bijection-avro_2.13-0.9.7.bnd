@@ -1,0 +1,7 @@
+-dsannotations: *
+-metatypeannotations: *
+Service-Component: *
+
+-classpath: jar/bijection-avro_2.13-0.9.7.jar
+Bundle-Version: 0.9.7
+Export-Package: com.*;version="0.9.7"

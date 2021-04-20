@@ -3,10 +3,13 @@ java calisma
 
 
 ------ USE EXTERNAL JAR FILES IN MAVEN --------
-create local-repository from exernal jar in maven
+- create local-repository from exernal jar in maven
 - create folder as named local-repo
-- run below command 
--	mvn install:install-file -Dfile=./jarFiles/test.jar -DgroupId=local-repo-group -DartifactId=test-model -Dversion=0.1 -Dpackaging=jar -DlocalRepositoryPath=./local-repo
+- run below commannd
+	
+	mvn install:install-file -Dfile=./jarFiles/test.jar -DgroupId=local-repo-group -DartifactId=test-model -Dversion=0.1 -Dpackaging=jar -DlocalRepositoryPath=./local-repo
+
+
 - add below configuration to pom.xml
 
       

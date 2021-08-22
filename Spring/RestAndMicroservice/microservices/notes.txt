@@ -1,0 +1,3 @@
+create microservice:
+ - go to spring initializr, select latest released version, spring web, devtools, actuator and config client dependencies.
+ -

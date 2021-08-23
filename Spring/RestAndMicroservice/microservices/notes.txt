@@ -1,3 +1,87 @@
+ 1.using config server.
+
 create microservice:
  - go to spring initializr, select latest released version, spring web, devtools, actuator and config client dependencies.
- -
+ - import to your ide
+ - one of the important recommendations that full path of project location does not have any space in full path. The space can cause problems for microservices.
+ 	( /home/serdar/github/JavaCalismalari/JavaCalismalari/Spring/RestAndMicroservice/microservices/limits-service)
+ - define config server in properties
+ 
+ --------------- CLOUD CONFIG SERVER -----------
+ - create Centralized Configuration Server microservice project and select devtools, config server (Central management for configuration via Git, SVN, or HashiCorp Vault) generate
+ - set port on application.properties --> server.port=8888
+ - create local git repository(git-localconfig-repo) for store config files and create config file limits-service.properties inside.
+ 	limits-service microservice will read limits-service.properties values from git repo over spring-cloud microservice (spring.config.import=optional:configserver:http://localhost:8888)
+ 	and set Confuguration Component attributes from config file. @ConfigurationProperties("limits-service")
+ - set 	application.properties of limits microservice name ==> spring.application.name=limits-service to determine which config belong to in git. (limits-service.properties)  
+ 
+ - define git location to spring cloud config server  application.properties (spring.cloud.config.server.git.uri=file:///home/serdar/github/JavaCalismalari/JavaCalismalari/Spring/RestAndMicroservice/microservices/git-localconfig-repo)
+ - go to ` http://localhost:8888/limits-service/default `
+ ----------------------------------------------
+ 
+ ------ Configuring  profiles for limits microservice --------
+ -applications may need configuretion for different environments such as dev or qa.
+ -save  profile info to application.properties as  spring.profiles.active=dev
+ 
+ -create  limits-service-dev.properties
+ 		  limit-services-qa.properties 	in git local repo
+ go to 	http://localhost:8888/limits-service/default
+ 	  	http://localhost:8888/limits-service/dev
+ 	  	http://localhost:8888/limits-service/qa	
+ 	  	
+ ------------------------------------------------------------------
+ 
+ 2.currency conversion microservice --> currency exchange microservice --> Database implementation  
+ 
+ ------------ Spring Currency Exchance Microservice (X 3)---------------
+ - go to spring initializr, select latest stable released version, spring web, devtools, actuator and config client dependencies.
+ - create CurrencyExchange Controller and retrieve json to client
+ - retrive data from database and service data as Rest 
+ 
+ 
+  ------------ Spring Currency conversion Microservice---------------
+  - go to spring initializr, select latest stable released version, spring web, devtools, actuator and config client dependencies.
+ - create CurrencyConverison Controller to calculate currency from json data that is retrieved as response from Currency Exchance Microservice using get request 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 

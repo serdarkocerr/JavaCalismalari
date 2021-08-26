@@ -31,7 +31,7 @@ create microservice:
  	  	
  ------------------------------------------------------------------
  
- 2.currency conversion microservice --> currency exchange microservice --> Database implementation  
+ 2.currency conversion microservice --> currency exchange microservice --> Database implementation  (with naming service and api gateway)
  
  ------------ Spring Currency Exchance Microservice (X 3)---------------
  - go to spring initializr, select latest stable released version, spring web, devtools, actuator and config client dependencies.
@@ -42,19 +42,74 @@ create microservice:
   ------------ Spring Currency conversion Microservice---------------
   - go to spring initializr, select latest stable released version, spring web, devtools, actuator and config client dependencies.
  - create CurrencyConverison Controller to calculate currency from json data that is retrieved as response from Currency Exchance Microservice using get request 
+
+ - use FEIGN for calling microservices :
+ 	- add @EnableFeignClients to service (CurrencyConversionServiceApplication)
+ 	- add @FeignClient(name = "currency-exchange",url = "localhost:8000" ) to proxy interface
+ 	- add method to interface (note that this method same as CurrencyExhangeController retriveExchange method except returning object but returning object 
+ 		should same structure or contain/matching  structure because spring automaticly match response json to object)
+ 		@GetMapping("/currency-exchange/from/{from}/to/{to}")
+		public CurrencyConversion retriveExchange(@PathVariable String from, @PathVariable String to) {
+		
+		}
+		
+------------ Naming Server - EUREKA--------------
+ -EUREKA is naming server and loadbalancer. You have to use with Feign
  
+ -@FeignClient(name = "currency-exchange",url = "localhost:8000" ) url is static and if url change, you have to change configration so that one of the reasons
+  	to use naming server. Microservices should register to naming server. 
+ - go to spring initializr, select latest stable released version, devtools, actuator and eureka server dependencies.
+ - add @EnableEurekaServer annotation.
+ - application.properties 
+ 	eureka.client.register-with-eureka=false
+	eureka.client.fetch-registry=false
+ - go to http://localhost:8761/
+ - add eureka client dependencies to clients pom.xml because of connecting to naming server
+ 		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
+		</dependency>
+ - add clients properties below
+ 	eureka.client.serviceUrl.defaultZone=http://localhost:8761/eureka		
+ 	eureka.instance.hostname=localhost
+ 	eureka.instance.prefer.ip-address=true
+ - if you want to use as loadbalancer, you should remove url = "localhost:8000"  from @FeignClient(name = "currency-exchange",url = "localhost:8000" ) 
+ 	@FeignClient(name = "currency-exchange") correct. 
  
+------------ API Gateway --------------
+ - older spring version use Zul but newest use spring cloud gateway
+ - go to spring initializr, select latest stable released version, devtools, actuator and eureka client, gateway dependencies.
+ - gateway api  provide to access microservies over gateway microservice.
+ 	- http://{gateway_ip}:{gateway_port}/{microservice_name}/{microservice_controller_mapping_access_url}
+ 	- http://localhost:8765/currency-conversion/currency-conversion/from/USD/to/TRY/quantity/10
+ 	- http://localhost:8765/currency-exchange/currency-exchange/from/USD/to/TRY
+ - It allows to define custom specific route to uri. (RouteLocator)
+ 	http://localhost:8765/currency-conversion/currency-conversion/from/USD/to/TRY/quantity/10 is very long so you can define route.
+ 	comment out  discovery.locatior.enabled and discovery.locator.lowerCaseServiceId
+ 	go using gateway uri (http://localhost:8765) and route:
+ 		- http://localhost:8765/currency-exchange/from/USD/to/TRY
+ 		- http://localhost:8765/currency-conversion/from/USD/to/TRY/quantity/10
+ 		- http://localhost:8765/currency-conversion-feign/from/USD/to/TRY/quantity/10
+ 		- http://localhost:8765/currency-conversion-new/from/USD/to/TRY/quantity/10
+ 		
  
+ 3.
+ ------------ Circuit Breaker - Resilience4j --------------
+ It provide to break microservice call , If a microservices not running and one of other service that call from this not running or slow microservice.
  
- 
- 
- 
- 
- 
- 
- 
- 
- 
+ - adding currency-excange service's pom.xml --> aop
+ - create CircuitBreakerController 
+ 	resilience4j provide framework to use circuit breaker pattern.
+ 	@Retry(name="sample-api") --> show  retry time config  and defined in  application.properties 
+ 	
+ 	@CircuitBreaker(name = "sample-api", fallbackMethod = "hardcoddedResponse") 
+ 	
+ 	run watch -n  0.1 curl http://localhost:8000/sample-api cmd in terminal, and watch the circuite breaker behaviour. It will stop the calling microservice rest uri.
+ 	
+ 	@RateLimiter(name = "default") // for example in 10 sec. I want to allow 2 calls to this sample-api
+ 	resilience4j.ratelimiter.instances.default.limitForPeriod=2
+	resilience4j.ratelimiter.instances.default.limitRefreshPeriod=10s
+ 	
  
  
  

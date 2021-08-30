@@ -1,0 +1,64 @@
+1. Download docker from  https://docs.docker.com/engine/install/ubuntu/
+
+docker --version
+
+2. https://hub.docker.com --> download docker image from this site
+Docker registry is that a number of repositories.
+You can download one image and run more than one container.
+
+docer run -p hostPort:containerPort {dockerImage}
+
+3. -d deatach from terminal and run background
+docer run -p hostPort:containerPort  -d {dockerImage}
+
+for log
+
+docker logs -f {imageId} --> tailing the logs  
+
+4. View docker containers
+docker container ls --> running containers
+docker container ls -a --> running and stoped containers
+docker container stop
+
+5. View docker images that saved in local.
+docker images
+
+6. 
+	Docker Client --> where command write from user. (console)
+	Docker Deamon or Engine --> commad execution
+								responsible for managing containers, local images and Image Registry (creating , pushing and pulling images)
+								 
+7. 	
+	docker tag {image} {newTagName}
+	
+	docker pull mysql
+	
+	docker search mysql --> search mysql image on hub
+	
+	docker image history  {imageId} --> show edit history
+	docker image inspect  {imageId} --> show content of image. Port,Env,Cmd etc.
+	
+	docker image remove {imageId} ---> image removed from local.
+	
+								 
+8.
+	docker events --> show what happened images events
+	docker top {containerId} -->  see all the process which are running on container
+	docker stats  --> all the stats running containers (cpu, memory etc.)
+		 
+	docker run -m 512m --cpu-quota 50000 ..... --> run 512 mem and 50% cpu usage
+	docker system df --> show images size and actives.
+		
+	
+	
+
+
+
+
+
+
+
+
+
+
+

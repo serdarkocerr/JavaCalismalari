@@ -110,9 +110,61 @@ create microservice:
  	resilience4j.ratelimiter.instances.default.limitForPeriod=2
 	resilience4j.ratelimiter.instances.default.limitRefreshPeriod=10s
  	
+4. 
+-------------- Zipkin Distrubuted Tracing System ----------------
+
+api-gateway	----->	Currency Conversion Microservice	----> 	Currency Exchange Microservice
+	-						-											-
+	 -						-										   -
+	  -						-										 -
+	   ->					->										<-
+	   					RABBIT MQ
+	   						-
+	   						-
+	   				Distrubuted Tracing Server
+	   						-
+	   						-
+	   					Database		
+	   
+download openzipkin and run
+ docker run -p 9411:9411 openzipkin/zipkin:2.23
+ - go to http://localhost:9411/zipkin/
  
- 
- 
+Connect  api-gateway, currency-exchange and currency-conversion service to zipkin:
+
+add dependencies:
+
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-sleuth</artifactId>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-sleuth-zipkin</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.amqp</groupId>
+			<artifactId>spring-rabbit</artifactId>
+		</dependency>		
+
+---- Without Rabbit MQ -----
+application.properties :
+	spring.sleuth.sampler.probability=1.0 
+
+go to :
+	-http://localhost:8765/currency-exchange/from/USD/to/TRY
+	-http://localhost:8100/currency-conversion-feign/from/USD/to/TRY/quantity/10
+	-http://localhost:8000/currency-exchange/from/USD/to/TRY
+	
+run services and  go to http://localhost:9411/zipkin/ , click Run Query
+
+view requests on zipkin UI.
+
+-------------------------- 
+---- With Rabbit MQ ------
+ What if Zipkin gone or not running? you should your trace in mq like rabbitMQ 
  
  
  

@@ -35,7 +35,13 @@ http://localhost:8765/currency-exchange/currency-exchange/from/USD/to/TRY
 http://localhost:8765/currency-conversion/currency-conversion/from/USD/to/TRY/quantity/10
 http://localhost:8765/currency-conversion/currency-conversion-feign/from/USD/to/TRY/quantity/10
 
+http://localhost:8765/currency-exchange/from/USD/to/TRY
+http://localhost:8765/currency-conversion/from/USD/to/TRY/quantity/10
+http://localhost:8765/currency-conversion-feign/from/USD/to/TRY/quantity/10
+http://localhost:8765/currency-conversion-new/from/USD/to/TRY/quantity/10
 
+Naming Server
+http://localhost:8761
 
 
 

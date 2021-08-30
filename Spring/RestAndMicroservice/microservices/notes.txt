@@ -111,7 +111,7 @@ create microservice:
 	resilience4j.ratelimiter.instances.default.limitRefreshPeriod=10s
  	
 4. 
--------------- Zipkin Distrubuted Tracing System ----------------
+-------------- Zipkin Distributed Tracing System ----------------
 
 api-gateway	----->	Currency Conversion Microservice	----> 	Currency Exchange Microservice
 	-						-											-
@@ -163,11 +163,79 @@ run services and  go to http://localhost:9411/zipkin/ , click Run Query
 view requests on zipkin UI.
 
 -------------------------- 
+----DOCKER CONTAINER---
+This plugin helps to us create image for our container.
+IF_NOT_PRESENT--> search image first locally, if not present pull from docker hub
+
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+					<configuration>
+						<image>
+							<name>serdarkocerr/mmv2-${project.artifactId}:${project.version}</name>
+						</image>
+						<pullPolicy>IF_NOT_PRESENT</pullPolicy>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+
+Create image:
+ Run as -> Maven Build... -> Goal = spring-boot:build-image -DskipTests
+
+docker run -p 8000:8000 serdarkocerr/microservices-currency-exchange-service:0.0.1-SNAPSHOT
+test --> http://localhost:8000/currency-exchange/from/USD/to/TRY
+
+Docker compose run multiple services from yaml file. So that create docker-compose.yml file
+docker-compose --version
+
+run from yml file 
+	docker-compose up
+
+go to:
+	-http://localhost:8765/currency-exchange/from/USD/to/TRY
+	-http://localhost:8100/currency-conversion-feign/from/USD/to/TRY/quantity/10
+	-http://localhost:8000/currency-exchange/from/USD/to/TRY
+	-http://localhost:8100/currency-conversion/from/USD/to/TRY/quantity/10 --> will not work. 
+		Because in controller response uri set as localhost. So you can change it
+		using application.properties variable from docker image.!!
+	
+
+
+
+NOTE: eureka url in currency-exchange-server's application.properties saved as 
+		 eureka.client.serviceUrl.defaultZone=http://localhost:8761/eureka
+	but localhost is not same currency-exchange-server container and naming-server container.
+	so that you have to set as naming-server ip address or set environment in docker-compose.yml
+	file to register naming-server. 
+		 environment:
+         EUREKA.CLIENT.SERVICEURL.DEFAULTZONE: http://naming-server:8761/eureka
+     Ayni durum ZIPKIN server icinde gecerlidir.
+     
+
+----------------------
+
+
 ---- With Rabbit MQ ------
- What if Zipkin gone or not running? you should your trace in mq like rabbitMQ 
+ What if Zipkin is gone or not running? microservices can put  information to mq like rabbitMQ.
+  
+ Normally zipkin sendr type have to define in application.properties as
+ 	'spring.zipkin.sender.type=web' but default is web so that you dont have to define.
  
+ If you decide to use rabbit mq, you should set
+ 	'spring.zipkin.sender.type=rabbit' or 
+ if you use docker container, you can define environment in yaml as
+ 	'SPRING.ZIPKIN.SENDER.TYPE: rabbit 
  
- 
+add rabbit mq server in yaml to run RABBIT MQ in docker container.
+
+Also add rabbit mq settings to environment in yaml file.
+
+-----------------------------------------------------------------------
  
  
  

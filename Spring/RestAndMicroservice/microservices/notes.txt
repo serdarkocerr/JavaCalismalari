@@ -236,9 +236,47 @@ add rabbit mq server in yaml to run RABBIT MQ in docker container.
 Also add rabbit mq settings to environment in yaml file.
 
 -----------------------------------------------------------------------
+5. KUBERNATES
+Run everywhere
+	- AWS: Elastic Kubernetes Service
+	- Azure: Azure Kubernetes Service
+	- GCP: Google Kubernetes Engine (GKE)
+	
+We will use GCP.
+
+Advantages: 
+ - If you want 10 instance of microservice A, 15 instance of microservice B 
+ - Auto Scaling: Based on load,you can manage container number up/down
+ - Service Discovery: help microservices find one another
+ - Load Balancer: distrubute load among multiple instances of a microservice.
+ - Self Healing: Do health checks and replace faiing instance
  
+go to : 
+	- http://cloud.google.com 
+and register Google Cloud Platform as Free Trial.	
  
+Cluster : Combination of nodes and master node. 
+	Master Node : manage Cluster
+	Worker Node : run your application
  
+go to google cloud console,
+	- select My First Project
+	- Open Kubernetes Engine Dashboard
+	- add cluster --> Name :serdarkocerr-cluster
+ 	- Recommendation :::> Whnever you are actually not doing anything or trying, delete cluster
+ 	because you will be billed for it.
+ 	- go cluster and open cloud shell.
+ 	- go cluster and click connect button and save command line access command
+ 	- paste to cloud shell terminal screen and run to connect cluster from cloudshell.
+ 	
+ 	- kubectl version
+ 	- deploy burnetes cluster and it give you a deployement ID 
+ 		kubectl create deployment hello-world-rest-api --image=in28min/hello-world-rest-api:0.0.1.RELEASE (docker image from docker hub.)
+ 	- Expose as a service to outside world. 
+ 		kubectl expose deployment hello-world-rest-api --type=LoadBalancer --port=8080
+ 	- go Services & Ingress tab and see hello-world-rest-api 
+ 		go to EndPoints http://34.134.128.152:8080
+ 		also GET http://34.134.128.152:8080/hello-world
  
  
  

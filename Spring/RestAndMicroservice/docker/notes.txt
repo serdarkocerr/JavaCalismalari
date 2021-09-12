@@ -49,6 +49,11 @@ docker images
 	docker run -m 512m --cpu-quota 50000 ..... --> run 512 mem and 50% cpu usage
 	docker system df --> show images size and actives.
 		
+	docker images
+	docker push serdarkocerr/microservices-naming-server:0.0.1-SNAPSHOT
+9.
+	go to /var/lib/docker/image/overlay2/imagedb/content/sha256/	
+	docker image inspect bf4ac3d62c4798468db1058d45cb6a6b17cd88848.......
 	
 	
 

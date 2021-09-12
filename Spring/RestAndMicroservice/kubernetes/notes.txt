@@ -1,0 +1,267 @@
+1. KUBERNATES
+Run everywhere
+	- AWS: Elastic Kubernetes Service
+	- Azure: Azure Kubernetes Service
+	- GCP: Google Kubernetes Engine (GKE)
+	
+We will use GCP.
+
+Advantages: 
+ - If you want 10 instance of microservice A, 15 instance of microservice B 
+ - Auto Scaling: Based on load,you can manage container number up/down
+ - Service Discovery: help microservices find one another
+ - Load Balancer: distrubute load among multiple instances of a microservice.
+ - Self Healing: Do health checks and replace faiing instance
+ 
+go to : 
+	- http://cloud.google.com 
+and register Google Cloud Platform as Free Trial.	
+ 
+Cluster : Combination of nodes and master node. 
+	Master Node : manage Cluster
+	Worker Node : run your application
+ 
+go to google cloud console,
+	- select My First Project
+	- Open Kubernetes Engine Dashboard (could use search button)
+		* Clusters ==> ability to create cluster using this.
+		* Workloads ==> provide to manage apllications or containers that you want to deploy into the cluster.
+		* Services & Ingress ==> Some of  your workload may be rest api or web application. This tab provide access to external world these workload. 
+		* Configuration ==> store application of configurations.
+		* Storage ==> provide persistence data storage for applications.
+	
+	- add cluster --> Name :serdarkocerr-cluster
+		* Name : serdarkocerr-cluster --> Create
+		
+ 	-!! Recommendation :::> Whnever you are actually not doing anything or trying, delete cluster
+ 	because you will be billed for it.
+ 	
+ 	- go cluster and open cloud shell and extend to all page.
+ 	- go Clusters and click connect button and save command line access command
+ 	- paste to cloud shell terminal screen and run to connect cluster(serdarkocerr-cluster) from cloudshell.
+ 	
+ 	- kubectl version
+ 	- deploy application to  kubernetes cluster and it give you a deployement ID 
+ 		kubectl create deployment hello-world-rest-api --image=in28min/hello-world-rest-api:0.0.1.RELEASE (docker image from docker hub. and deploy to our kubernetes cluster.)
+ 	- Expose as a service to outside world. 
+ 		kubectl expose deployment hello-world-rest-api --type=LoadBalancer --port=8080
+ 	- go Services & Ingress tab and see hello-world-rest-api status OK.
+ 		go to EndPoints http://34.134.165.87:8080
+ 		also GET http://34.134.165.87:8080/hello-world
+ 	
+ 	
+ 	When we execute kubectl create deployment command Kubernetes create a deployment, a replica set, a pod 
+ 	When we execute kubectl expose deployment command Kubernetes create a service for us.
+ 	
+ 	Pod: Smallest deployable unit in Kubernetes. Container can not be created without pod. A container must be inside a pod. 
+ 	ReplicaSet : decide number of  instance pods have to be running.
+ 		- kubectl get pods -o wide
+ 			each pod has a unique ip address.
+ 		 Pod can contain multiple containers. All the containers which are present ina pod , share resources. 
+ 		 -kubectl explain pods
+ 		 -kubectl describe pod hello-world-rest-api-58ff5dd898-9trh2 ==> 
+ 		 -kubectl get replicasets = kubectl get rs ==> show desired running pods. If pods stop and desired pods grater than running pods, Kubernates immediately run automatically missing number of pods.
+ 		 -kubectl scale deployment hello-world-rest-api --replicas=3 ==> create 3 pods for giving application. Check status `kubetcl get pods`
+ 		 -kubectl get events ---sort-by=.metada.creationTimestamp ==> sort events by creation time stamp.
+ 		 -kubectl explain replicaset 
+ 		 --- DEPLOY new version of hello-world-rest-api ----
+ 		 -kubectl get rs -o wide ==> check current version of image.
+ 		 -kubectl set image deployment hello-world-rest-api hello-world-rest-api=in28min/hello-world-rest-api.0.0.2.RELEASE ==> set image version scaled to 0.0.2.RELEASE if error exists while pulling new image, 
+ 		 	kubernetes continues running old image. If there is no error to  set new image , kubernetes kill old images and run new images with same replicaset configurations without downtime.
+ 		 	 control with `kubectl get pods`, `kubectl get rs` , `kubectl get events --sort-by=.metadata.creationTimestamp`
+ 		 	 GET 'http://34.134.165.87:8080/hello-world'
+ 		 	 
+ 		 	 --- DEPLOY new version of hello-world-rest-api END----
+ 		 
+ 		 -kubectl get pods -o wide ==> name, status, age,ip, and node are shown.
+ 		 	Although each of pods have own ip address (10.55.0.5), Users can connect Service ip address (34.134.165.87) because So Pods may down or new pods may up, Users should not be effected from this up/down.
+ 		 	Users could always send request same ip and port address wothout effecting pods down or up.
+ 		 	Search Load Balancer and see frontendt IP (34.134.165.87) also see backend 
+ 
+ 		 -kubeclt get services ==> see kubernetes services that are running.  CLusterIP(can only be accessed from inside cluster.) and LoadBalancer.
+ 	
+ 	- Search Kubernetes Engine and click Workloads. You can see name of applications. Click it and see deatil of applicaton. 
+ 			EDIT: view yaml file
+ 			ACTIONS: scale, rooling update etc.
+ 			REVISION HISTORY : all the history about versions and events.
+ 			
+ 	-Master Node: 
+ 	
+ 		-API Server (kube-apiserver):
+ 			Provide to talk commands like kubeclt with Kubernates Cluster 
+ 		-Distribute Database (etcd): 
+ 			Distributed database. all the configuration change, scaling deployment, scaling operations, all the detail of those stored in this database.
+ 			
+ 		-Scheduler (kube-schedular):
+ 			Responsible for scheduling the pods on the nodes. Decide using CPU, Memory etc. which node sholdu have pod and scheduled on it. 
+ 		-Controller Manager (kube-controller-manager):
+ 			Manages the helth of the cluster. 
+ 	
+ 	-Worker Node:  	User application  would be running in pods inside the worker nodes.
+ 		 -Node Agent (kubelet):
+ 		 	Reports what happened in the worker node.For example a pod is down, Node Agent reports it to controller manager of master node. 
+ 		 -Networking Component (kube-proxy):
+ 		 	Provide to manage network in worker node. (Expose etc.)
+ 		 -Container Runtime (CRI):
+ 		 	
+ 		 -PODS:
+ 		 	containers are running inside pods. Several pods could be run on worker.
+ 	
+ 	-kubectl get componentstatuses ==> get component statuses 
+ 
+ 	GCloud : provide to manage Google Kubernetes clusters from oiur local machine.
+ 	Kubectl: after install Gcloud , you can connect to cluster and run kubeclt commands. Provide flexibility connecting from local.
+ 
+ 2.
+ 	We are not using naming server.
+ 	
+ 	Some changes are inside these project from in nmicroservice folder ones. 
+ 	currently-conversion-service changes:
+ 	1. In pom.xml, 
+ 		-version changed to 0.0.11-SNAPSHOT
+ 		-name changed to currency-conversion-service-kubernetes.
+ 		-spring-cloud-starter-config and netflix-eureka-client disabled from pom. Because Kubernetes provide own configuration management using Config Maps
+ 			provide own service discovery(instead of netflix eureaka)
+ 		-sleuth-zipkin and rabbitmq disabled from pom. Kubernetes other option is loggong and tracing.
+	
+	2. in CurrencyConversionController, added some logs. 		
+	3. application.properties,
+ 	Kubernetes needs to know whether an application is up and running , whether can receive traffic or not 
+ 		## CHANGE-KUBERNETES
+			management.endpoint.health.probes.enabled=true
+			management.health.livenessState.enabled=true
+			management.health.readinessState.enabled=true
+			
+	4. in CurrencyExcahengeProxy,   
+		Kubernetes has own service discovery so we removed eureka from pom. So that we should use below config.
+			use if exist CURRENCY_EXCHANGE_SERVICE_HOST, if not use  http://localhost
+ 		@FeignClient(name = "currency-exchange", url = "${CURRENCY_EXCHANGE_SERVICE_HOST:http://localhost}:8000")
+ 		
+ 	currency-exchange-service changes:
+ 	1. In pom.xml
+ 		-version changed to 0.0.11-SNAPSHOT
+  		-name changed to currency-exchange-service-kubernetes.
+ 		-sleuth-zipkin and rabbitmq disabled from pom. Kubernetes other option is loggong and tracing.
+ 		-spring-cloud-starter-config and netflix-eureka-client disabled from pom. Because Kubernetes provide own configuration management using Config Maps
+ 			provide own service discovery(instead of netflix eureaka)
+ 
+	2. in CurrencyExchangeController, 
+ 			String host = environment.getProperty("HOSTNAME");
+			String version = "v11";
+ 
+ 	3. application.properties,
+ 	Kubernetes needs to know whether an application is up and running , whether can receive traffic or not 
+ 		## CHANGE-KUBERNETES
+			management.endpoint.health.probes.enabled=true
+			management.health.livenessState.enabled=true
+			management.health.readinessState.enabled=true
+ 
+ 
+ -Build containers,
+ 	1. Run as Build parameter ==> spring-boot:build-image -DskipTests
+ 	2. After building complated, 
+ 		docker login from terminal
+ 		push creating images to docker hub.
+ 		docker push serdarkocerr/microservices-currency-conversion-service:0.0.11-SNAPSHOT
+ 		docker push serdarkocerr/microservices-currency-exchange-service:0.0.11-SNAPSHOT
+ 		
+-Kubernetes:
+	-deploy containers to kubernetes. (You can run commands from terminal using  gcloud and kubectl , or cloud shell.)		
+ 		kubectl create deploymenty currency-exchange --image=serdarkocerr/microservices-currency-exchange-service:0.0.11-SNAPSHOT
+ 		kubectl expose deployment currency-exchange --type=LoadBalancer --port=8000
+ 		
+  		kubectl create deployment currency-conversion --image=serdarkocerr/microservices-currency-conversion-service:0.0.11-SNAPSHOT
+ 		kubectl expose deployment currency-conversion --type=LoadBalancer --port=8100
+ 				
+ 	-control services
+ 		kubectl get services(svc)
+ 		kubectl get replicaset(rs)
+ 		kubectl get pods(po)
+ 		kubectl get all
+ 		
+ 	curl http://34.118.23.52:8000/currency-exhange/from/USD/to/INR
+ 	curl http://34.118.90.213:8100/currency-conversion-feign/from/USD/to/INR/quantity/10	
+ 		
+ 	if you look into CurrencyExchangeProxy in cirrency-conversion-service, you will see 	
+ 		@FeignClient(name = "currency-exchange", url = "${CURRENCY_EXCHANGE_SERVICE_HOST:http://localhost}:8000")
+ 		So how conversion service find exchange service over feign client as ip 	CURRENCY_EXCHANGE_SERVICE_HOST or localhost?
+ 		
+ 		Whenever a new service starts up, Kubernates create environments variable as {SERVICE_NAME}_SERVICE_HOST, And these variables
+ 		can be reachable from every pods.
+ 		
+ 		currency_exchange ==> CURRENCY_EXCHANGE_SERVICE_HOST
+ 		currency_conversion ==> CURRENCY_CONVERSION_SERVICE_HOST
+ 		
+ 	Also in CurrencyExchangeController->
+ 		String host = environment.getProperty("HOSTNAME"); 
+ 			return as host = service full name like currency-exchange-69c6bc8984-vv89d 
+ 		
+ 		
+ YAML in Kubernetes:
+ 		
+ 		kubectl get deployments
+ 		kubectl get deployment currency-exchange -o yaml ==> printing existing the entire deployment information in a YAML format.
+ 		kubectl get service currency-exchange -o yaml
+ 		
+ 		kubectl get deployment currency-exchange -o yaml >> deployment.yaml ==> save to deployment.yaml
+ 		kubectl get service currency-exchange -o yaml >> service.yaml ==> save service yaml. 
+ 		then copy service.yaml content to end of deployment.yaml file with yaml seperator ---
+ 		
+ 		set replica as 2 in deployment.yaml
+ 		kubectl diff -f depmoyment.yaml
+ 		kubectl apply -f deployment.yaml ==> apply changed deployment.yaml.
+ 		check replica kubectl get rs
+ 		check new replica status kubectl get pods
+ 		
+ 		test using watch and see receiving response from 2 replica because of loadbalancing.
+ 		watch curl http://34.118.90.213:8100/currency- conversion-feign/from/USD/to/INR/quantity/10
+ 	
+ 		 A pod whic is part of deployment, and inside a pod there is container running, container spec.  consist of images. more than one container
+ 		 may be inside of spec:container:. 
+ 		 
+		 YOU CAN DEFINE RUN STRATEGY !!!
+
+Logging and Trace:
+	
+		 -Enable Google Cloud Log
+		 -go to API&Services  and click Enable APIS AND SERVICES
+		 -search strackdriver and enable  Stackdriver API, Stackdriver Monitoring API, Strackdriver Trace API, Error Reporting API, Profiler API
+		 	
+DELETE EXISTING pods,service,deployment and APPLY news using yaml file:
+ 	
+ 	kubectl delete all -l app=currency-exchange ==> delete pods,service,deployments.
+ 	kubectl delete all -l app=currency-conversion ==> delete pods,service,deployments.
+ 	kubectl get all ==> get all info about pods, services
+ 	kubectl apply -f deployment.yaml ==> currency-exchange from deployment.yaml
+ 	curl http://{new_external_ip_addr}:8000/currency-exchange/from/USD/to/INR
+ 	You can change replica to 1 in deployment.yaml and then again run kubectl apply -f deployment.yaml for updating.
+ 	after All of the update in deployment.yaml file, run kubectl apply -f deployment.yaml. 
+ 	
+ENVIRONMENT VARIABLE to yaml to specified container:
+	spec:
+		containers:
+		- image: serdarkocerr/microservices-currency-conversion-service:0.0.11-SNAPSHOT
+		  ...
+		  env:
+			- name: CURRENCY_EXCHANGE_URI
+			  value: http://currency-exchange	
+ 		
+ 		
+CREATE CONFIG MAP
+	Kubernetes has centralized configuration 
+		kubectl create configmap currency-conversion --from-literal=CURRENCY_EXCHANGE_URI=http://currency-exchange
+		kubetctl get configmap 
+ 		kubetctl get configmap currency-conversion -o yaml
+ 		kubetctl get configmap currency-conversion -o yaml >> configmap.yaml ---> save config map yaml.
+ 		then copy configmap.yaml content to end of deployment.yaml file with yaml seperator ---
+ 		And add envFrom instad of env
+ 				envFrom:
+ 					-configMapRef:
+ 						name: currency-conversion
+ 						
+ 		kubectl apply -f deployment.yaml
+ 
+ 
+ 
+ 
+ 

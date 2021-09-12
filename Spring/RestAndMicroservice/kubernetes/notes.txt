@@ -262,6 +262,45 @@ CREATE CONFIG MAP
  		kubectl apply -f deployment.yaml
  
  
+ kubectl rollout history deployment currency-conversion ==> show deployment history
+ kubectl rollout undo deployment currency-exchange --to-revision=1 ==> undo to revision 1
+ 
+Liveness and Readiness Probes:
+
+	Moving one release to other release ,  there was a little time bit of downtime nearliy 15-20 sec. How to avoid this situation?
+	actuator provide health ==> liveness and readiness so that if we use these configurations, version exchange will be without any downtime
+	
+	Add below to deployment.yaml:
+	spec:
+		containers:
+		- image: serdarkocerr/microservices-currency-conversion-service:0.0.11-SNAPSHOT
+		  ...
+		  readinessProbe: 
+		  	httpGet:
+		  		port: 8000
+		  		path: /actuator/healt/readiness	
+ 
+ 		  livenessProbe: 
+		  	httpGet:
+		  		port: 8000
+		  		path: /actuator/healt/liveness	
+ 
+
+AutoScaling microservices:
+	I would want to increase number of pods if load is hisgh on currency exchange. 
+	Manual Scaling ==> set replicas settings then apply deployment.yaml
+						kubectl scale deploymeny currency-exchange --replicas=2
+	
+	Auto Scaling ==> kubectl autoscale deployment currency-exchange --min=1 --max=3 --cpu-percent=50
+					kubectl get hpa ==> horizontal pod autoscaler config log.
+					kubectl top pods ==> how much cpu and memory for pod using log.
+					kubectl top nodes ==> how much cpu and memory for nodes using log.
+	
+					kubectl delete  hpa currency-exchange ==> horizontinal autoscaler deleted.
+					
+	
+	 
+ 
  
  
  

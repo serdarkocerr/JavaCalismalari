@@ -80,12 +80,16 @@ create microservice:
  - older spring version use Zul but newest use spring cloud gateway
  - go to spring initializr, select latest stable released version, devtools, actuator and eureka client, gateway dependencies.
  - gateway api  provide to access microservies over gateway microservice.
+ 	- add application.properties:
+ 		spring.cloud.gateway.discovery.locator.enabled=true
+		spring.cloud.gateway.discovery.locator.lowerCaseServiceId=true
  	- http://{gateway_ip}:{gateway_port}/{microservice_name}/{microservice_controller_mapping_access_url}
  	- http://localhost:8765/currency-conversion/currency-conversion/from/USD/to/TRY/quantity/10
  	- http://localhost:8765/currency-exchange/currency-exchange/from/USD/to/TRY
  - It allows to define custom specific route to uri. (RouteLocator)
  	http://localhost:8765/currency-conversion/currency-conversion/from/USD/to/TRY/quantity/10 is very long so you can define route.
  	comment out  discovery.locatior.enabled and discovery.locator.lowerCaseServiceId
+ 	create ApiGatewayConfiguration config class and define RouteLocator bean.
  	go using gateway uri (http://localhost:8765) and route:
  		- http://localhost:8765/currency-exchange/from/USD/to/TRY
  		- http://localhost:8765/currency-conversion/from/USD/to/TRY/quantity/10

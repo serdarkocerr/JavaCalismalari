@@ -113,7 +113,8 @@ go to google cloud console,
  	Kubectl: after install Gcloud , you can connect to cluster and run kubeclt commands. Provide flexibility connecting from local.
  
  2.
- 	We are not using naming server.
+ 	We are not using naming server. (Kubernetes service discovery act as naming server)
+ 	We are not api gateway . (We are able to connect pods using service ip address so that we dont need to know pods ips.)
  	
  	Some changes are inside these project from in nmicroservice folder ones. 
  	currently-conversion-service changes:
@@ -121,7 +122,7 @@ go to google cloud console,
  		-version changed to 0.0.11-SNAPSHOT
  		-name changed to currency-conversion-service-kubernetes.
  		-spring-cloud-starter-config and netflix-eureka-client disabled from pom. Because Kubernetes provide own configuration management using Config Maps
- 			provide own service discovery(instead of netflix eureaka)
+ 			provide own service discovery(instead of netflix eureaka - naming server)
  		-sleuth-zipkin and rabbitmq disabled from pom. Kubernetes other option is loggong and tracing.
 	
 	2. in CurrencyConversionController, added some logs. 		
@@ -136,6 +137,8 @@ go to google cloud console,
 		Kubernetes has own service discovery so we removed eureka from pom. So that we should use below config.
 			use if exist CURRENCY_EXCHANGE_SERVICE_HOST, if not use  http://localhost
  		@FeignClient(name = "currency-exchange", url = "${CURRENCY_EXCHANGE_SERVICE_HOST:http://localhost}:8000")
+ 		Whenever a new service starts up, Kubernates create environments variable as {SERVICE_NAME}_SERVICE_HOST, And these variables
+ 		can be reachable from every pods.
  		
  	currency-exchange-service changes:
  	1. In pom.xml

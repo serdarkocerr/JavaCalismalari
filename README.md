@@ -25,20 +25,35 @@ java calisma
 		 </repository>
 
 
-#Concurrency vs Parallelisim
+# Concurrency vs Parallelisim
+
 if you jhave two threads 
-Concurrency                 Concurrency + parallelism
-(Single-Core CPU)           (Multi-Core CPU)
- ___                         ___ ___
-|th1|                       |th1|th2|
-|   |                       |   |___|
-|___|___                    |   |___
-    |th2|                   |___|th2|
- ___|___|                    ___|___|
-|th1|                       |th1|
-|___|___                    |   |___
-    |th2|                   |   |th2|
+
+Concurrency                
+(Single-Core CPU)           
+ ___                         
+|th1|                       
+|   |                       
+|___|___                    
+    |th2|                   
+ ___|___|                   
+|th1|                       
+|___|___                    
+    |th2|
     
+ Concurrency + parallelism
+(Multi-Core CPU)
+___ ___
+|th1|th2|
+|   |___|
+|   |___
+|___|th2|
+ ___|___|
+|th1|
+|   |___
+|   |th2|
+
+
     
 Parallelism is simultaneous execution of processes on a multiple cores per CPU or multiple CPUs (on a single motherboard).
 Concurrency is when Parallelism is achieved on a single core/CPU by using scheduling algorithms that divides the CPU’s time (time-slice). Processes are interleaved.

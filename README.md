@@ -32,26 +32,26 @@ if you jhave two threads
 Concurrency                
 (Single-Core CPU)           
  ___                         
-|th1|                       
-|   |                       
-|___|___                    
-    |th2|                   
- ___|___|                   
-|th1|                       
-|___|___                    
-    |th2|
+| th1 |                       
+|     |                       
+|___  | ___                    
+      | th2 |                   
+ ___  | ___ |                   
+| th1 |                       
+| ___ | ___                    
+      | th2 |
     
  Concurrency + parallelism
 (Multi-Core CPU)
-___ ___
-|th1|th2|
-|   |___|
-|   |___
-|___|th2|
- ___|___|
-|th1|
-|   |___
-|   |th2|
+ ___  ___
+| th1 | th2|
+|     | ___ |
+|     | ___
+|___  | th2 |
+ ___  | ___ |
+| th1 |
+|     | ___
+|     | th2|
 
 
     
